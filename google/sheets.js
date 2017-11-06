@@ -134,12 +134,13 @@ function auth(e) {
   var scriptProps = PropertiesService.getScriptProperties();
   var authHash = scriptProps.getProperty('NEW_TX_TOKEN_HASH');
   if (authHash == null) {
-    throw ("token hash not found");  
-  
-    var digestBytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, e.parameter['token']);
+    throw ("token hash not found");
+  }
+
+  var digestBytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, e.parameter['token']);
   // Convert digest bytes to hex string
   var digest = digestBytes.map(function(b) {return ("0"+((b+256)%256).toString(16)).slice(-2)}).join("");
-  // Should be using constant time compare
+  // Should be using constant time compare ideally
   if (digest != authHash && globalTesting != true) {
     throw ("invalid auth token");
   }
@@ -218,8 +219,6 @@ function doGet(e) {
   }
 }
 
-// https://script.google.com/macros/s/AKfycbzAAlfs246eKmR1Rc_H3fcqPDrM39KyNn0Xrng-nk161qx-Dwcv/exec
-// https://script.google.com/macros/s/AKfycby0JiU5JL1bQrF7WnS34jx83H5jzxH2kOhO7mzzRfli/dev
 function doPost(e) {
   return doGet(e); // Google app scripts are broken, only GET requests work. POST returns 404
 }
